@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Xin chào, {{ name }}!</h2>
+<p>Chào mừng bạn đến với lịch nhắc online.</p>
+<a href="{{ url_for('logout') }}">Đăng xuất</a>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Sự kiện{% endblock %}
+{% block content %}
+<h2>{{ form.title.data or "Tạo sự kiện" }}</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.title.label }} {{ form.title(class="form-control") }}</div>
+    <div class="mb-3">{{ form.description.label }} {{ form.description(class="form-control") }}</div>
+    <div class="mb-3">{{ form.start.label }} {{ form.start(class="form-control") }}</div>
+    <div class="mb-3">{{ form.end.label }} {{ form.end(class="form-control") }}</div>
+    <div class="mb-3">{{ form.reminder_minutes_before.label }} {{ form.reminder_minutes_before(class="form-control") }}</div>
+    <div class="mb-3">{{ form.repeat_type.label }} {{ form.repeat_type(class="form-control") }}</div>
+    <div class="mb-3">{{ form.submit(class="btn btn-primary") }}</div>
+</form>
+<div class="mb-3">
+    {{ form.repeat_type.label(class="form-label") }}
+    {{ form.repeat_type(class="form-select") }}
+</div>
+
+{% endblock %}

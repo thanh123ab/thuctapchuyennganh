@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang chủ - Lịch nhắc Online</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Navigation */
+        .header-nav {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            z-index: 1000;
+            display: flex;
+            gap: 12px;
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+
+        .nav-btn-login {
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-btn-login:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn-register {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn-register:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(118, 75, 162, 0.4);
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1000px;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .title-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            padding: 50px 40px;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .title-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+        }
+
+        .calendar-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            padding: 35px;
+            animation: fadeInUp 1s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .calendar-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .calendar-title {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .nav-arrow {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-arrow:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-arrow:active {
+            transform: scale(0.95);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .calendar-day-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 8px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .calendar-day {
+            background: white;
+            border: 2px solid transparent;
+            padding: 15px 8px;
+            text-align: center;
+            min-height: 55px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
+            position: relative;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .calendar-day:hover {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+            border-color: #667eea;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        .calendar-day.other-month {
+            color: #bbb;
+            background: #f8f9fa;
+            opacity: 0.6;
+        }
+        .main-title {
+            color: #333;
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 20px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            animation: float 8s ease-in-out infinite;
+            backdrop-filter: blur(2px);
+        }
+
+        .floating-circle:nth-child(1) {
+            width: 120px;
+            height: 120px;
+            top: 15%;
+            left: 8%;
+            animation-delay: 0s;
+        }
+
+        .floating-circle:nth-child(2) {
+            width: 180px;
+            height: 180px;
+            top: 60%;
+            right: 5%;
+            animation-delay: 2s;
+        }
+
+        .floating-circle:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            bottom: 15%;
+            left: 15%;
+            animation-delay: 4s;
+        }
+
+        .floating-circle:nth-child(4) {
+            width: 140px;
+            height: 140px;
+            top: 40%;
+            left: 80%;
+            animation-delay: 6s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(60px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+            }
+        }
+
+        @keyframes eventPulse {
+            0%, 100% {
+                transform: translateX(-50%) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translateX(-50%) scale(1.2);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(-40px) rotate(180deg);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        /* Enhanced Responsive Design */
+        @media (max-width: 768px) {
+            .header-nav {
+                position: relative;
+                top: auto;
+                right: auto;
+                justify-content: center;
+                margin-bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: fit-content;
+            }
+            
+            .main-container {
+                padding: 15px;
+            }
+            
+            .title-section {
+                padding: 40px 25px;
+                margin-bottom: 20px;
+            }
+            
+            .main-title {
+                font-size: 32px;
+            }
+            
+            .subtitle {
+                font-size: 18px;
+            }
+            
+            .calendar-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .calendar-grid {
+                padding: 20px;
+            }
+            
+            .calendar-day {
+                min-height: 45px;
+                font-size: 14px;
+                padding: 12px 6px;
+            }
+
+            .calendar-title {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-nav {
+                flex-direction: column;
+                gap: 8px;
+                padding: 12px;
+            }
+
+            .nav-btn {
+                padding: 12px 20px;
+                font-size: 13px;
+            }
+            
+            .title-section {
+                padding: 30px 20px;
+            }
+            
+            .main-title {
+                font-size: 28px;
+            }
+            
+            .subtitle {
+                font-size: 16px;
+            }
+            
+            .calendar-section {
+                padding: 25px 20px;
+            }
+            
+            .calendar-day {
+                min-height: 40px;
+                font-size: 13px;
+                padding: 10px 4px;
+            }
+
+            .calendar-title {
+                font-size: 20px;
+            }
+
+            .nav-arrow {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
+
+    <!-- Enhanced Navigation -->
+    <div class="header-nav">
+        <a href="/login" class="nav-btn nav-btn-login">Đăng nhập</a>
+        <a href="/register" class="nav-btn nav-btn-register">Đăng ký</a>
+    </div>
+
+    <div class="main-container">
+        <div class="title-section">
+            <h1 class="main-title">Ứng dụng Lịch nhắc Online</h1> 
+            <p class="subtitle">Quản lý lịch cá nhân một cách dễ dàng và hiệu quả. Không bao giờ bỏ lỡ những sự kiện quan trọng trong cuộc sống.</p>
+        </div>
+
+        <div class="calendar-section">
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <h2 class="calendar-title" id="currentMonth"></h2>
+                    <div class="calendar-nav">
+                        <button class="nav-arrow" id="prevMonth">‹</button>
+                        <button class="nav-arrow" id="nextMonth">›</button>
+                    </div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Calendar will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class Calendar {
+            constructor() {
+                this.currentDate = new Date();
+                this.today = new Date();
+                this.monthNames = [
+                    'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
+                    'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
+                ];
+                this.dayNames = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+                this.init();
+            }
+
+            init() {
+                this.renderCalendar();
+                this.attachEventListeners();
+                this.addInteractiveFeatures();
+            }
+
+            attachEventListeners() {
+                document.getElementById('prevMonth').addEventListener('click', () => {
+                    this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+                    this.renderCalendar();
+                    this.animateTransition();
+                });
+
+                document.getElementById('nextMonth').addEventListener('click', () => {
+                    this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+                    this.renderCalendar();
+                    this.animateTransition();
+                });
+            }
+
+            addInteractiveFeatures() {
+                // Add click handlers for calendar days
+                document.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('calendar-day') && 
+                        !e.target.classList.contains('other-month')) {
+                        this.selectDay(e.target);
+                    }
+                });
+            }
+
+            selectDay(dayElement) {
+                // Remove previous selection
+                document.querySelectorAll('.calendar-day.selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                
+                // Add selection to clicked day
+                dayElement.classList.add('selected');
+                
+                // Add some visual feedback
+                dayElement.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    dayElement.style.transform = '';
+                }, 200);
+            }
+
+            animateTransition() {
+                const grid = document.getElementById('calendarGrid');
+                grid.style.opacity = '0.7';
+                grid.style.transform = 'scale(0.98)';
+                
+                setTimeout(() => {
+                    grid.style.opacity = '1';
+                    grid.style.transform = 'scale(1)';
+                }, 150);
+            }
+
+            renderCalendar() {
+                const year = this.currentDate.getFullYear();
+                const month = this.currentDate.getMonth();
+                
+                // Update month title
+                document.getElementById('currentMonth').textContent = 
+                    `${this.monthNames[month]} ${year}`;
+
+                // Clear calendar grid
+                const calendarGrid = document.getElementById('calendarGrid');
+                calendarGrid.innerHTML = '';
+
+                // Add day headers
+                this.dayNames.forEach(day => {
+                    const dayHeader = document.createElement('div');
+                    dayHeader.className = 'calendar-day-header';
+                    dayHeader.textContent = day;
+                    calendarGrid.appendChild(dayHeader);
+                });
+
+                // Get first day of month and number of days
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+                // Add empty cells for previous month
+                for (let i = firstDay - 1; i >= 0; i--) {
+                    const day = document.createElement('div');
+                    day.className = 'calendar-day other-month';
+                    day.textContent = daysInPrevMonth - i;
+                    calendarGrid.appendChild(day);
+                }
+
+                // Add days of current month
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    dayElement.textContent = day;
+
+                    // Highlight today
+                    if (
+                        year === this.today.getFullYear() &&
+                        month === this.today.getMonth() &&
+                        day === this.today.getDate()
+                    ) {
+                        dayElement.classList.add('today');
+                    }
+
+                    // Add some sample events (more varied)
+                    if (day === 15 || day === 22 || day === 8 || day === 3 || day === 28) {
+                        const eventDot = document.createElement('div');
+                        eventDot.className = 'event-dot';
+                        dayElement.appendChild(eventDot);
+                    }
+
+                    calendarGrid.appendChild(dayElement);
+                }
+
+                // Fill remaining cells with next month
+                const totalCells = calendarGrid.children.length;
+                const remainingCells = 42 - totalCells; // 6 rows * 7 days
+                
+                for (let day = 1; day <= remainingCells; day++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day other-month';
+                    dayElement.textContent = day;
+                    calendarGrid.appendChild(dayElement);
+                }
+            }
+        }
+
+        // Initialize calendar when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new Calendar();
+            
+            // Add some entrance animations
+            setTimeout(() => {
+                document.querySelector('.title-section').style.transform = 'translateY(0)';
+                document.querySelector('.title-section').style.opacity = '1';
+            }, 100);
+            
+            setTimeout(() => {
+                document.querySelector('.calendar-section').style.transform = 'translateY(0)';
+                document.querySelector('.calendar-section').style.opacity = '1';
+            }, 300);
+        });
+
+        // Add CSS for selected day
+        const style = document.createElement('style');
+        style.textContent = `
+            .calendar-day.selected {
+                background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+                color: white !important;
+                font-weight: 700 !important;
+                box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4) !important;
+            }
+            
+            .calendar-grid {
+                transition: all 0.3s ease;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

@@ -1,14 +1,12 @@
-from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
-from models import db, User, Event
+from models import db, User, Event, Log
 from forms import RegisterForm, LoginForm, EventForm
 from datetime import timedelta
 from dateutil.relativedelta import relativedelta
-from flask import jsonify
-from models import Event
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -23,6 +21,16 @@ login_manager.init_app(app)
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# Decorator kiểm tra admin
+def admin_required(func):
+    @login_required
+    def decorated_view(*args, **kwargs):
+        if not current_user.is_admin:
+            abort(403)
+        return func(*args, **kwargs)
+    decorated_view.__name__ = func.__name__
+    return decorated_view
+
 @app.route('/get_events')
 def get_events():
     events = Event.query.all()
@@ -30,15 +38,18 @@ def get_events():
     for event in events:
         event_list.append({
             'title': event.title,
-            'start': event.start_time.strftime('%Y-%m-%dT%H:%M:%S'),
-            'end': event.end_time.strftime('%Y-%m-%dT%H:%M:%S') if event.end_time else None,
+            'start': event.start.strftime('%Y-%m-%dT%H:%M:%S'),
+            'end': event.end.strftime('%Y-%m-%dT%H:%M:%S') if event.end else None,
         })
     return jsonify(event_list)
+
 @app.route('/')
 def index():
     return render_template('index.html')
-@app.route('/calender')
-def calendar_view():
+
+@app.route('/calendar')
+@login_required
+def calendar():
     return render_template('calendar.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -142,11 +153,6 @@ def delete_event(id):
     flash('Đã xoá sự kiện.', 'success')
     return redirect(url_for('dashboard'))
 
-@app.route('/calendar')
-@login_required
-def calendar():
-    return render_template('calendar.html')
-
 @app.route('/api/events')
 @login_required
 def api_events():
@@ -186,19 +192,47 @@ def api_events():
 
     return jsonify(event_list)
 
+# ----------------- ADMIN ROUTES -------------------
+
+@app.route('/admin')
+@admin_required
+def admin_dashboard():
+    users = User.query.all()
+    events = Event.query.all()
+    return render_template('admindashboard.html', users=users, events=events)
+
+@app.route('/admin/users')
+@admin_required
+def admin_users():
+    users = User.query.all()
+    return render_template('admin_user.html', users=users)
+
+@app.route('/admin/users/<int:user_id>')
+@admin_required
+def admin_user_detail(user_id):
+    user = User.query.get_or_404(user_id)
+    return render_template('admin_user_detail.html', user=user)
+
+@app.route('/admin/events')
+@admin_required
+def admin_events():
+    events = Event.query.all()
+    return render_template('admin_event.html', events=events)
+
+@app.route('/admin/settings')
+@admin_required
+def admin_settings():
+    return render_template('admin_setting.html')
+
+@app.route('/admin/logs')
+@admin_required
+def admin_logs():
+    logs = Log.query.order_by(Log.timestamp.desc()).all()
+    return render_template('admin_log.html', logs=logs)
+
 # Khởi tạo bảng DB
 with app.app_context():
     db.create_all()
 
-@app.route('/admin')
-@login_required
-def admin_dashboard():
-    if not current_user.is_admin:
-        flash('Bạn không có quyền truy cập trang quản trị.', 'danger')
-        return redirect(url_for('dashboard'))
-
-    users = User.query.all()
-    events = Event.query.all()
-    return render_template('admindashboard.html', users=users, events=events)
 if __name__ == '__main__':
     app.run(debug=True)

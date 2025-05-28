@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Quản lý sự kiện{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">Quản lý sự kiện</h1>
+
+  <div class="bg-white shadow rounded-lg overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tiêu đề</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Người dùng</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Bắt đầu</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kết thúc</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Lặp lại</th>
+          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        {% for event in events %}
+        <tr>
+          <td class="px-6 py-4 text-sm text-gray-900">{{ event.id }}</td>
+          <td class="px-6 py-4 text-sm">{{ event.title }}</td>
+          <td class="px-6 py-4 text-sm">
+            <a href="{{ url_for('admin_user_detail', user_id=event.user.id) }}" class="text-blue-600 hover:underline">
+              {{ event.user.name }}
+            </a>
+          </td>
+          <td class="px-6 py-4 text-sm">{{ event.start.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td class="px-6 py-4 text-sm">{{ event.end.strftime('%Y-%m-%d %H:%M') if event.end else '—' }}</td>
+          <td class="px-6 py-4 text-sm">{{ event.repeat_type or 'Không' }}</td>
+          <td class="px-6 py-4 text-sm text-right">
+            <form action="{{ url_for('admin_delete_event', event_id=event.id) }}" method="POST" onsubmit="return confirm('Bạn có chắc muốn xoá sự kiện này?');">
+              <button type="submit" class="text-red-600 hover:underline">Xoá</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if not events %}
+    <p class="text-gray-500 mt-6">Không có sự kiện nào trong hệ thống.</p>
+  {% endif %}
+</div>
+{% endblock %}

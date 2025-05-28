@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Nhật ký hệ thống{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">Nhật ký hệ thống</h1>
+
+  {% if logs %}
+    <div class="overflow-x-auto rounded-xl shadow bg-white">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">#</th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">Thời gian</th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">Người dùng</th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">Hành động</th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">Chi tiết</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 text-sm text-gray-700">
+          {% for log in logs %}
+          <tr>
+            <td class="px-4 py-3">{{ loop.index }}</td>
+            <td class="px-4 py-3">{{ log.timestamp.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+            <td class="px-4 py-3">{{ log.user_name or 'Hệ thống' }}</td>
+            <td class="px-4 py-3">{{ log.action }}</td>
+            <td class="px-4 py-3">{{ log.details }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="text-gray-500">Chưa có bản ghi hoạt động nào.</div>
+  {% endif %}
+</div>
+{% endblock %}

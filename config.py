@@ -6,7 +6,7 @@ class Config:
 
     # Cấu hình kết nối MySQL
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'mysql+pymysql://admin:admin@34.124.212.240/calendar_db'
+        'mysql+pymysql://admin2:admin2@34.124.212.240/calendar_db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Cấu hình session timeout (tuỳ chọn)

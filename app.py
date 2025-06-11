@@ -1,5 +1,4 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, abort
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
@@ -152,6 +151,12 @@ def delete_event(id):
     db.session.commit()
     flash('Đã xoá sự kiện.', 'success')
     return redirect(url_for('dashboard'))
+
+@app.route('/manage-events.html')
+@login_required
+def manage_events_html():
+    events = Event.query.filter_by(user_id=current_user.id).order_by(Event.start).all()
+    return render_template('manage-events.html', events=events)
 
 @app.route('/api/events')
 @login_required

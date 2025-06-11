@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Sự kiện</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .events-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .events-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .events-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4a5568;
+        }
+
+        .total-events {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .event-item {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .event-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .event-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .event-date-time {
+            color: #718096;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(245, 101, 101, 0.4);
+        }
+
+        .event-description {
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .no-events {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+
+        .no-events-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .no-events h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #4a5568;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .filter-section {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .events-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .event-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .event-actions {
+                justify-content: center;
+            }
+
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1> Quản lý Sự kiện</h1>
+            <a href="javascript:history.back()" class="back-btn">← Quay lại Dashboard</a>
+        </div>
+
+        <!-- Events Container -->
+        <div class="events-container">
+            <div class="events-header">
+                <div class="events-title">Danh sách sự kiện</div>
+                <div class="total-events" id="totalEvents">0 sự kiện</div>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <span class="filter-label">Lọc theo:</span>
+                <select class="filter-select" id="monthFilter" onchange="filterEvents()">
+                    <option value="all">Tất cả các tháng</option>
+                </select>
+                <select class="filter-select" id="sortFilter" onchange="filterEvents()">
+                    <option value="date">Sắp xếp theo ngày</option>
+                    <option value="title">Sắp xếp theo tiêu đề</option>
+                </select>
+            </div>
+
+            <!-- Events List -->
+            <div id="eventsList">
+                <!-- Events will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Event Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Chỉnh sửa sự kiện</h3>
+                <button class="close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <div class="form-group">
+                        <label class="form-label">Tiêu đề sự kiện:</label>
+                        <input type="text" class="form-control" id="editTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Thời gian:</label>
+                        <input type="time" class="form-control" id="editTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mô tả:</label>
+                        <textarea class="form-control" id="editDescription" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Cập nhật sự kiện</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let events = {};
+        let currentEditingEvent = null;
+
+        // Load events from localStorage
+        function loadEvents() {
+            const savedEvents = localStorage.getItem('calendarEvents');
+            if (savedEvents) {
+                events = JSON.parse(savedEvents);
+            }
+        }
+
+        // Save events to localStorage
+        function saveEvents() {
+            localStorage.setItem('calendarEvents', JSON.stringify(events));
+        }
+
+        // Display all events
+        function displayEvents() {
+            const eventsList = document.getElementById('eventsList');
+            const totalEventsElement = document.getElementById('totalEvents');
+
+            let allEvents = [];
+
+            // Collect all events with date information
+            for (const dateKey in events) {
+                const dateEvents = events[dateKey];
+                dateEvents.forEach(event => {
+                    allEvents.push({
+                        ...event,
+                        dateKey: dateKey,
+                        date: new Date(dateKey)
+                    });
+                });
+            }
+
+            // Update total count
+            totalEventsElement.textContent = `${allEvents.length} sự kiện`;
+
+            if (allEvents.length === 0) {
+                eventsList.innerHTML = `
+                    <div class="no-events">
+                        <div class="no-events-icon"></div>
+                        <h3>Chưa có sự kiện nào</h3>
+                        <p>Hãy quay lại Dashboard để tạo sự kiện mới!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort events by date
+            allEvents.sort((a, b) => a.date - b.date);
+
+            // Generate HTML for events
+            let eventsHTML = '';
+            allEvents.forEach(event => {
+                const formattedDate = event.date.toLocaleDateString('vi-VN', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                eventsHTML += `
+                    <div class="event-item">
+                        <div class="event-header">
+                            <div>
+                                <div class="event-title">${event.title}</div>
+                                <div class="event-date-time">
+                                     ${formattedDate} •  ${event.time}
+                                </div>
+                            </div>
+                            <div class="event-actions">
+                                <button class="btn btn-edit" onclick="editEvent('${event.dateKey}', ${event.id})">
+                                     Sửa
+                                </button>
+                                <button class="btn btn-delete" onclick="deleteEvent('${event.dateKey}', ${event.id})">
+                                     Xóa
+                                </button>
+                            </div>
+                        </div>
+                        ${event.description ? `<div class="event-description">${event.description}</div>` : ''}
+                    </div>
+                `;
+            });
+
+            eventsList.innerHTML = eventsHTML;
+            populateMonthFilter(allEvents);
+        }
+
+        // Populate month filter options
+        function populateMonthFilter(allEvents) {
+            const monthFilter = document.getElementById('monthFilter');
+            const months = new Set();
+
+            allEvents.forEach(event => {
+                const monthYear = `${event.date.getFullYear()}-${event.date.getMonth()}`;
+                months.add(monthYear);
+            });
+
+            // Clear existing options except "all"
+            monthFilter.innerHTML = '<option value="all">Tất cả các tháng</option>';
+
+            // Add month options
+            months.forEach(monthYear => {
+                const [year, month] = monthYear.split('-');
+                const date = new Date(year, month);
+                const monthName = date.toLocaleDateString('vi-VN', { month: 'long', year: 'numeric' });
+                monthFilter.innerHTML += `<option value="${monthYear}">${monthName}</option>`;
+            });
+        }
+
+        // Filter and sort events
+        function filterEvents() {
+            const monthFilter = document.getElementById('monthFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+
+            let allEvents = [];
+
+            // Collect all events
+            for (const dateKey in events) {
+                const dateEvents = events[dateKey];
+                dateEvents.forEach(event => {
+                    allEvents.push({
+                        ...event,
+                        dateKey: dateKey,
+                        date: new Date(dateKey)
+                    });
+                });
+            }
+
+            // Filter by month
+            if (monthFilter !== 'all') {
+                const [filterYear, filterMonth] = monthFilter.split('-');
+                allEvents = allEvents.filter(event => {
+                    return event.date.getFullYear() == filterYear && event.date.getMonth() == filterMonth;
+                });
+            }
+
+            // Sort events
+            if (sortFilter === 'date') {
+                allEvents.sort((a, b) => a.date - b.date);
+            } else if (sortFilter === 'title') {
+                allEvents.sort((a, b) => a.title.localeCompare(b.title));
+            }
+
+            // Update display
+            const eventsList = document.getElementById('eventsList');
+            const totalEventsElement = document.getElementById('totalEvents');
+
+            totalEventsElement.textContent = `${allEvents.length} sự kiện`;
+
+            if (allEvents.length === 0) {
+                eventsList.innerHTML = `
+                    <div class="no-events">
+                        <div class="no-events-icon"></div>
+                        <h3>Không tìm thấy sự kiện</h3>
+                        <p>Thử thay đổi bộ lọc để xem các sự kiện khác!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Generate HTML
+            let eventsHTML = '';
+            allEvents.forEach(event => {
+                const formattedDate = event.date.toLocaleDateString('vi-VN', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                eventsHTML += `
+                    <div class="event-item">
+                        <div class="event-header">
+                            <div>
+                                <div class="event-title">${event.title}</div>
+                                <div class="event-date-time">
+                                     ${formattedDate} •  ${event.time}
+                                </div>
+                            </div>
+                            <div class="event-actions">
+                                <button class="btn btn-edit" onclick="editEvent('${event.dateKey}', ${event.id})">
+                                     Sửa
+                                </button>
+                                <button class="btn btn-delete" onclick="deleteEvent('${event.dateKey}', ${event.id})">
+                                    🗑 Xóa
+                                </button>
+                            </div>
+                        </div>
+                        ${event.description ? `<div class="event-description">${event.description}</div>` : ''}
+                    </div>
+                `;
+            });
+
+            eventsList.innerHTML = eventsHTML;
+        }
+
+        // Edit event
+        function editEvent(dateKey, eventId) {
+            const eventToEdit = events[dateKey].find(event => event.id === eventId);
+            if (!eventToEdit) return;
+
+            currentEditingEvent = { dateKey, eventId };
+
+            document.getElementById('editTitle').value = eventToEdit.title;
+            document.getElementById('editTime').value = eventToEdit.time;
+            document.getElementById('editDescription').value = eventToEdit.description || '';
+
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        // Close edit modal
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            document.getElementById('editForm').reset();
+            currentEditingEvent = null;
+        }
+
+        // Delete event
+        function deleteEvent(dateKey, eventId) {
+            if (confirm('Bạn có chắc muốn xóa sự kiện này?')) {
+                events[dateKey] = events[dateKey].filter(event => event.id !== eventId);
+
+                // Remove date key if no events left
+                if (events[dateKey].length === 0) {
+                    delete events[dateKey];
+                }
+
+                saveEvents();
+                displayEvents();
+            }
+        }
+
+        // Handle edit form submission
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (!currentEditingEvent) return;
+
+            const { dateKey, eventId } = currentEditingEvent;
+            const eventToUpdate = events[dateKey].find(event => event.id === eventId);
+
+            if (eventToUpdate) {
+                eventToUpdate.title = document.getElementById('editTitle').value;
+                eventToUpdate.time = document.getElementById('editTime').value;
+                eventToUpdate.description = document.getElementById('editDescription').value;
+
+                saveEvents();
+                displayEvents();
+                closeEditModal();
+
+                alert('Sự kiện đã được cập nhật thành công!');
+            }
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        });
+
+        // Initialize page
+        loadEvents();
+        displayEvents();
+    </script>
+</body>
+</html>

@@ -116,6 +116,15 @@
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
+        .manage-btn {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            margin-left: 10px;
+        }
+
+        .manage-btn:hover {
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+
         .calendar {
             width: 100%;
             border-collapse: collapse;
@@ -349,6 +358,7 @@
                     <div class="calendar-nav">
                         <button class="nav-btn" onclick="previousMonth()">‹</button>
                         <button class="nav-btn" onclick="nextMonth()">›</button>
+                        <button class="nav-btn manage-btn" onclick="goToManageEvents()">Quản lý sự kiện</button>
                     </div>
                 </div>
 
@@ -406,6 +416,19 @@
     <script>
         let currentDate = new Date();
         let events = {}; // Store events by date key
+
+        // Load events from localStorage
+        function loadEvents() {
+            const savedEvents = localStorage.getItem('calendarEvents');
+            if (savedEvents) {
+                events = JSON.parse(savedEvents);
+            }
+        }
+
+        // Function to navigate to manage events page
+        function goToManageEvents() {
+            window.location.href = 'manage-events.html';
+        }
 
         const monthNames = [
             "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
@@ -511,10 +534,14 @@
             }
 
             events[dateKey].push({
+                id: Date.now(), // Add unique ID for editing/deleting
                 title: title,
                 time: time,
                 description: description
             });
+
+            // Save to localStorage
+            localStorage.setItem('calendarEvents', JSON.stringify(events));
 
             // Show success message
             alert('Sự kiện đã được tạo thành công!');
@@ -533,6 +560,7 @@
         });
 
         // Initialize calendar
+        loadEvents();
         generateCalendar(currentDate);
     </script>
 </body>

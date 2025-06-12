@@ -12,12 +12,12 @@ class Config:
     # Cấu hình session timeout (tuỳ chọn)
     PERMANENT_SESSION_LIFETIME = 3600  # 1 giờ
 
-    # Tùy chọn thêm nếu dùng gửi email trong tương lai
-    # MAIL_SERVER = 'smtp.gmail.com'
-    # MAIL_PORT = 587
-    # MAIL_USE_TLS = True
-    # MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
-    # MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = 'caoducthanh18@gmail.com'  # Thay bằng email của bạn
+    MAIL_PASSWORD = 'your_app_password'     # App Password, KHÔNG phải mật khẩu thường
+    MAIL_DEFAULT_SENDER = 'caoducthanh18@gmail.com'
 
-    # Bật debug cho logger trong SQLAlchemy
-    # SQLALCHEMY_ECHO = True
+
+

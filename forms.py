@@ -52,7 +52,6 @@ class AdminEventForm(FlaskForm):
     user_id = IntegerField('ID Người dùng', validators=[DataRequired()])
     submit = SubmitField('Lưu')
 
-# Tuỳ chọn: Form cho bảng setting nếu bạn quản lý thiết lập hệ thống
 class SettingForm(FlaskForm):
     key = StringField('Khóa cấu hình', validators=[DataRequired()])
     value = StringField('Giá trị', validators=[DataRequired()])

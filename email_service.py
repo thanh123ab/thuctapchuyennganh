@@ -1,4 +1,4 @@
-# email_service.py - File mới để xử lý email
+
 from flask_mail import Mail, Message
 from flask import current_app
 
@@ -24,7 +24,7 @@ def send_email(to, subject, template):
 
 def send_reminder_email(user_email, event):
 
-    subject = f"🔔 Nhắc nhở: {event.title}"
+    subject = f" Nhắc nhở: {event.title}"
 
 
     html_template = f"""

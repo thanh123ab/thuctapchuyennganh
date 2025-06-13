@@ -134,6 +134,7 @@ def dashboard():
 @login_required
 def create_event():
     form = EventForm()
+
     if form.validate_on_submit():
         event = Event(
             title=form.title.data,
@@ -148,7 +149,8 @@ def create_event():
         db.session.commit()
         flash('Tạo sự kiện thành công!', 'success')
         return redirect(url_for('dashboard'))
-    return render_template('event_form.html', form=form)
+
+    return render_template('create_event.html', form=form)
 
 
 @app.route('/event/<int:id>/edit', methods=['GET', 'POST'])

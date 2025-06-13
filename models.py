@@ -31,7 +31,7 @@ class Event(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    # THÊM MỚI - Method để reset reminder khi sửa sự kiện
+
     def reset_reminder(self):
 
         self.reminder_sent = False

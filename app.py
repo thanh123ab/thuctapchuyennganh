@@ -6,13 +6,11 @@ from models import db, User, Event, Log
 from forms import RegisterForm, LoginForm, EventForm
 from datetime import timedelta, datetime
 from dateutil.relativedelta import relativedelta
-import os
-from email_service import mail, send_email
+from email_service import mail
 from reminder_scheduler import start_reminder_scheduler
 
 app = Flask(__name__)
 app.config.from_object(Config)
-
 mail.init_app(app)
 db.init_app(app)
 
@@ -193,7 +191,6 @@ def delete_event(id):
 @app.route('/test-email')
 @login_required
 def test_email():
-    """Route test gửi email"""
     success = send_email(
         to=current_user.email,
         subject="Test Email từ hệ thống lịch",
@@ -219,14 +216,14 @@ def manage_events():
         return redirect(url_for('dashboard'))
 
 # Route gửi email thủ công
-@app.route('/send_test_email')
+@app.route('/send_email')
 @login_required
-def send_test_email():
+def send_email():
     try:
         success = send_email(
             to=current_user.email,
-            subject="Test Email từ Calendar App",
-            template="<h1>Email test thành công!</h1><p>Hệ thống email đang hoạt động bình thường.</p>"
+            subject=" Email từ Calendar App",
+            template="<h1> thành công!</h1><p>g.</p>"
         )
         if success:
             flash('Email test đã được gửi!', 'success')
@@ -363,13 +360,11 @@ def send_notification():
 
     return render_template('send_notification.html')
 
-
-# CẬP NHẬT PHẦN if __name__ == '__main__':
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
 
-    # THÊM DÒNG NÀY - Khởi động reminder scheduler
+
     start_reminder_scheduler(app)
 
     app.run(debug=True)
